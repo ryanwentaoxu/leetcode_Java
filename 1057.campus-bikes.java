@@ -1,72 +1,67 @@
 class WBP {
-    int wId;
-    int bId;
+    int workerId;
+    int bikeId;
     int distance;
 
-    public WBP(int wId, int bId, int distance) {
-        this.wId = wId;
-        this.bId = bId;
-        this.distance = distance;
+    public WBP(int w, int b, int d) {
+        this.workerId = w;
+        this.bikeId = b;
+        this.distance = d;
     }
 }
-
 class Solution {
-    List<List<Pair<Integer, Integer>>> workerToBike;
-    int[] bikeList;
+    List<List<Pair<Integer, Integer>>> rank;
+    int[] index = new int[1001];
 
-    public void addtoPq(PriorityQueue<WBP> pq, int worker) {
-        Pair<Integer, Integer> p = workerToBike.get(worker).get(bikeList[worker]);
-        bikeList[worker] += 1;
-        WBP wbp = new WBP(worker, p.getValue(), p.getKey());
-        pq.add(wbp);
+    public void add(PriorityQueue<WBP> pq, int worker) {
+        Pair<Integer, Integer> p = rank.get(worker).get(index[worker]);
+        index[worker] += 1;
+        pq.add(new WBP(worker, p.getValue(), p.getKey()));
+    }
+
+    public int cal(int[] w, int[] b) {
+        return Math.abs(w[0] - b[0]) + Math.abs(w[1] - b[1]);
     }
 
     public int[] assignBikes(int[][] workers, int[][] bikes) {
-        workerToBike = new ArrayList();
-        bikeList = new int[1001];
         Comparator<WBP> c = new Comparator<WBP>(){
             @Override
             public int compare(WBP o1, WBP o2) {
                 if (o1.distance != o2.distance) return o1.distance - o2.distance;
-                else if (o1.wId != o2.wId) return o1.wId - o2.wId;
-                else return o1.bId - o2.bId;
+                else if (o1.workerId != o2.workerId) return o1.workerId - o2.workerId;
+                else return o1.bikeId - o2.bikeId;
             }
         };
+
+        rank = new ArrayList();
         PriorityQueue<WBP> pq = new PriorityQueue<WBP>(c);
         for (int i = 0; i < workers.length; i++) {
-            List<Pair<Integer, Integer>> bl = new ArrayList();
+            List<Pair<Integer, Integer>> l = new ArrayList();
             for (int j = 0; j < bikes.length; j++) {
-                bl.add(new Pair(findDistance(workers[i], bikes[j]), j));
+                l.add(new Pair(cal(workers[i], bikes[j]), j));
             }
-            Collections.sort(bl, Comparator.comparing(Pair::getKey));
-            workerToBike.add(bl);
-            bikeList[i] = 0;
-            addtoPq(pq, i);
+            Collections.sort(l, Comparator.comparing(Pair::getKey));
+            rank.add(l);
+            index[i] = 0;
+            add(pq, i);
         }
+
         boolean bikeStatus[] = new boolean[bikes.length];
         int[] workerStatus = new int[workers.length];
         Arrays.fill(workerStatus, -1);
 
-        while (pq.isEmpty() != true) {
-            WBP workerBikePair = pq.remove();
-            
-            int worker = workerBikePair.wId;
-            int bike = workerBikePair.bId;
-            if (workerStatus[worker] == -1 && !bikeStatus[bike]) {
-                // If both worker and bike are free, assign them to each other
-                bikeStatus[bike] = true;
-                workerStatus[worker] = bike;
-                
+        while (pq.isEmpty() == false) {
+            WBP wbp = pq.poll();
+            int b = wbp.bikeId;
+            int w = wbp.workerId;
+
+            if (bikeStatus[b] == false && workerStatus[w] == -1) {
+                bikeStatus[b] = true;
+                workerStatus[w] = b;
             } else {
-                // Add the next closest bike for the current worker
-                addtoPq(pq, worker);
+                add(pq, w);
             }
         }
         return workerStatus;
-    }
-
-
-    int findDistance(int[] worker, int[] bike) {
-        return Math.abs(worker[0] - bike[0]) + Math.abs(worker[1] - bike[1]);
     }
 }
