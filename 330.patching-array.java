@@ -66,11 +66,11 @@ class Solution {
     public int minPatches(int[] nums, int n) {
         int ans = 0;
         long miss = 1;
-        int i = 0;
+        int index = 0;
         while (miss <= n) {
-            if (i < nums.length && nums[i] <= miss) {
-                miss += nums[i];
-                i += 1;
+            if (index < nums.length && nums[index] <= miss) {
+                miss += nums[index];
+                index += 1;
             } else {
                 miss += miss;
                 ans += 1;
