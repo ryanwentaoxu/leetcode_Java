@@ -5,36 +5,28 @@
  */
 
 // @lc code=start
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 class Solution {
     public int maxEvents(int[][] events) {
         Comparator<int[]> c = new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                if (o1[0] == o2[0]) return o1[1] - o2[1];
                 return o1[0] - o2[0];
             }
         };
         Arrays.sort(events, c);
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        int start = 1;
-        int end = 100000;
-        int count = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue();
+        int i = 0;
         int ans = 0;
-        for (int day = start; day <= end; day++) {    
-            while (count < events.length && events[count][0] == day) {
-                pq.add(events[count][1]);
-                count += 1;
+        for (int d = 1; d <= 100000; d++) {
+            while (i < events.length && events[i][0] == d) {
+                pq.offer(events[i++][1]);
             }
-            while (pq.isEmpty() == false && pq.peek() < day) {
+            while (!pq.isEmpty() && pq.peek() < d) {
                 pq.poll();
             }
-            if (pq.isEmpty() == false) {
+            if (!pq.isEmpty()) {
                 pq.poll();
-                ans += 1;
+                ans++;
             }
         }
         return ans;
