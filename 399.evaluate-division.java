@@ -80,81 +80,63 @@
 
 // @lc code=start
 class Solution {
+    Map<String, Pair<String, Double>> map;
+    Set<String> set;
+
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        HashMap<String, Pair<String, Double>> gidWeight = new HashMap();
-
-        // step 1: build the union groups
-
+        map = new HashMap();
+        set = new HashSet();
         for (int i = 0; i < equations.size(); i++) {
             List<String> equation = equations.get(i);
-            String dividend = equation.get(0);
-            String divisor = equation.get(1);
             double value = values[i];
-            union(gidWeight, dividend, divisor, value);
+            String de = equation.get(0);
+            String di = equation.get(1);
+            set.add(de);
+            set.add(di);
+            union(de, di, value);
         }
-
-        // step 2 run the evaluaion, with lazy updates in find
-        double[] results = new double[queries.size()];
+        double[] ret = new double[queries.size()];
         for (int i = 0; i < queries.size(); i++) {
-            List<String> query = queries.get(i);
-            String dividend = query.get(0);
-            String divisor = query.get(1);
-            if (!gidWeight.containsKey(dividend) || !gidWeight.containsKey(divisor)) {
-                results[i] = -1.0;
-            } else {
-                Pair<String, Double> dividendEntry = find(gidWeight, dividend);
-                Pair<String, Double> divisorEntry = find(gidWeight, divisor);
-
-                String dividendGid = dividendEntry.getKey();
-                String divisorGid = divisorEntry.getKey();
-
-                Double dividendWeight = dividendEntry.getValue();
-                Double divisorWeight = divisorEntry.getValue();
-
-                if (!dividendGid.equals(divisorGid))
-                    // case 2). the variables do not belong to the same chain/group
-                    results[i] = -1.0;
-                else
-                    // case 3). there is a chain/path between the variables
-                    results[i] = dividendWeight / divisorWeight;
+            String de = queries.get(i).get(0);
+            String di = queries.get(i).get(1);
+            if (!set.contains(de) || !set.contains(di)) {
+                ret[i] = -1.0;
+                continue;
+            }
+            String deP = find(de).getKey();
+            String diP = find(di).getKey();
+            if (!deP.equals(diP)) ret[i] = -1;
+            else {
+                ret[i] = find(de).getValue() / find(di).getValue();
             }
         }
-        return results;
+        return ret;
     }
 
-    public Pair<String, Double> find(HashMap<String, Pair<String, Double>> gw, String node) {
-        if (!gw.containsKey(node)) {
-            gw.put(node, new Pair(node, 1.0));
+    public Pair<String, Double> find(String node) {
+        if (!map.containsKey(node)) {
+            map.put(node, new Pair(node, 1.0));
         }
-        Pair<String, Double> entry = gw.get(node);
-        if (!entry.getKey().equals(node)) {
-            Pair<String, Double> p = find(gw, entry.getKey());
-            gw.put(node, new Pair(p.getKey(), entry.getValue() * p.getValue()));
+        Pair<String, Double> p = map.get(node);
+        if (!p.getKey().equals(node)) {
+            Pair<String, Double> pp = find(p.getKey());
+            map.put(node, new Pair(pp.getKey(), pp.getValue() * p.getValue()));
         }
-        return gw.get(node);
+        return map.get(node);
     }
-    
-    public void union(HashMap<String, Pair<String, Double>> gw, String de, String di, Double value) {
-        Pair<String, Double> p1 = this.find(gw, de);
-        Pair<String, Double> p2 = this.find(gw, di);
 
-        // they are parent
-        String deNode = p1.getKey();
-        String diNode = p2.getKey();
-
-        Double deV = p1.getValue();
-        Double diV = p2.getValue();
-
-        // update
-        if (!deNode.equals(diNode)) {
-            gw.put(deNode, new Pair(diNode, value * diV / deV));
-        }
-
-        // M / dev
-        // N / div
-
-        // (M / dev) * (div / N) * v = 1
+    public void union(String de, String di, double value) {
+        Pair<String, Double> deP = find(de);
+        Pair<String, Double> diP = find(di);
+        if (deP.getKey().equals(diP.getKey())) return;
+        String deId = deP.getKey();
+        String diId = diP.getKey();
+        Double deV = deP.getValue();
+        Double diV = diP.getValue();
+        map.put(deId, new Pair(diId, value * diV / deV));
     }
+
+
 }
-// @lc code=end
 
+    
