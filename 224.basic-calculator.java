@@ -7,37 +7,38 @@
 // @lc code=start
 class Solution {
     public int calculate(String s) {
-        int result = 0;
-        int operand = 0;
+        Stack<Integer> operand = new Stack();
+        Stack<Integer> num = new Stack();
+        int n = 0;
+        int ans = 0;
         int sign = 1;
-        Stack<Integer> stack = new Stack();
+
         for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (Character.isDigit(c) == true) {
-                operand = operand * 10 + (int)(c - '0');
-            } else if (c == '+') {
-                result += operand * sign;
-                operand = 0;
+            if (Character.isDigit(s.charAt(i))) {
+                n = n * 10 + (int)(s.charAt(i) - '0');
+            } else if (s.charAt(i) == '+') {
+                ans += n * sign;
+                n = 0;
                 sign = 1;
-            } else if (c == '-') {
-                result += operand * sign;
-                operand = 0;
+            } else if (s.charAt(i) == '-') {
+                ans += n * sign;
+                n = 0;
                 sign = -1;
-            } else if (c == '(') {
-                stack.push(result);
-                stack.push(sign);
-                result = 0;
-                operand = 0;
+            } else if (s.charAt(i) == '(') {
+                num.push(ans);
+                operand.push(sign);
+                ans = 0;
+                n = 0;
                 sign = 1;
-            } else if (c == ')') {
-                result += operand * sign;
-                result *= stack.pop();
-                result += stack.pop();
-                operand = 0;
+            } else if (s.charAt(i) == ')') {
+                ans += sign * n;
+                ans = num.pop() + operand.pop() * ans;
+                n = 0;
                 sign = 1;
             }
         }
-        return result + operand * sign;
+
+        return ans + n * sign;
     }
 }
 // @lc code=end
