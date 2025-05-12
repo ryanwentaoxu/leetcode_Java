@@ -81,42 +81,55 @@
 // @lc code=start
 class Solution {
     Map<String, Pair<String, Double>> map;
-    Set<String> set;
 
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
         map = new HashMap();
-        set = new HashSet();
-        for (int i = 0; i < equations.size(); i++) {
-            List<String> equation = equations.get(i);
-            double value = values[i];
+        int index = 0;
+        Set<String> visited = new HashSet();
+        for (List<String> equation : equations) {
             String de = equation.get(0);
             String di = equation.get(1);
-            set.add(de);
-            set.add(di);
+            visited.add(de);
+            visited.add(di);
+            double value = values[index++];
             union(de, di, value);
         }
         double[] ret = new double[queries.size()];
-        for (int i = 0; i < queries.size(); i++) {
-            String de = queries.get(i).get(0);
-            String di = queries.get(i).get(1);
-            if (!set.contains(de) || !set.contains(di)) {
-                ret[i] = -1.0;
+        index = 0;
+        for (List<String> q : queries) {
+            String de = q.get(0);
+            String di = q.get(1);
+            if (!visited.contains(de) || !visited.contains(di)) {
+                ret[index++] = -1.0;
                 continue;
-            }
-            String deP = find(de).getKey();
-            String diP = find(di).getKey();
-            if (!deP.equals(diP)) ret[i] = -1;
-            else {
-                ret[i] = find(de).getValue() / find(di).getValue();
+            } else {
+                String deId = find(de).getKey();
+                String diId = find(di).getKey();
+                if (!deId.equals(diId)) {
+                    ret[index++] = -1.0;
+                    continue;
+                } else {
+                    ret[index++] = find(de).getValue() / find(di).getValue();
+                }
             }
         }
         return ret;
     }
 
+    public String union(String de, String di, double value) {
+        Pair<String, Double> dep = find(de);
+        Pair<String, Double> dip = find(di);
+        if (dep.getKey().equals(dip.getKey())) return dep.getKey();
+        String deId = dep.getKey();
+        Double deV = dep.getValue();
+        String diId = dip.getKey();
+        Double diV = dip.getValue();
+        map.put(deId, new Pair(diId, value * diV / deV));
+        return diId;
+    }
+
     public Pair<String, Double> find(String node) {
-        if (!map.containsKey(node)) {
-            map.put(node, new Pair(node, 1.0));
-        }
+        if (!map.containsKey(node)) map.put(node, new Pair(node, 1.0));
         Pair<String, Double> p = map.get(node);
         if (!p.getKey().equals(node)) {
             Pair<String, Double> pp = find(p.getKey());
@@ -124,19 +137,6 @@ class Solution {
         }
         return map.get(node);
     }
-
-    public void union(String de, String di, double value) {
-        Pair<String, Double> deP = find(de);
-        Pair<String, Double> diP = find(di);
-        if (deP.getKey().equals(diP.getKey())) return;
-        String deId = deP.getKey();
-        String diId = diP.getKey();
-        Double deV = deP.getValue();
-        Double diV = diP.getValue();
-        map.put(deId, new Pair(diId, value * diV / deV));
-    }
-
-
 }
 
     
