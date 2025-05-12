@@ -59,48 +59,39 @@
 
 // @lc code=start
 
-import java.util.Map;
-
 class DSU {
     int[] parent;
-    int[] num;
-    int size;
+    int[] size;
 
-    public DSU(int size) {
-        this.size = size;
-        this.parent = new int[this.size + 1];
-        this.num = new int[this.size + 1];
-        for (int i = 1; i <= this.size; i++) {
-            this.parent[i] = i;
-            this.num[i] = 1;
+    public DSU(int s) {
+        parent = new int[s + 1];
+        size = new int[s + 1];
+        for (int i = 1; i <= s; i++) {
+            parent[i] = i;
+            size[i] = 1;
         }
     }
 
-    public int findParent(int node) {
+    public int find(int node) {
         int p = parent[node];
-        if (node != p) {
-            parent[node] = findParent(p);
+        if (p != node) {
+            parent[node] = find(p);
         }
         return parent[node];
     }
 
     public int union(int node1, int node2) {
-        int p1 = findParent(node1);
-        int p2 = findParent(node2);
-
+        int p1 = find(node1);
+        int p2 = find(node2);
         if (p1 == p2) return p1;
-        else {
-            int n1 = this.num[p1];
-            int n2 = this.num[p2];
-            if (n1 > n2) {
-                int p = p1;
-                p1 = p2;
-                p2 = p;
-            }
-            parent[p1] = p2;
-            num[p2] += num[p1];
-            return findParent(p2);
+        if (size[p1] > size[p2]) {
+            int tmp = p1;
+            p1 = p2;
+            p2 = tmp;
         }
+        parent[p1] = p2;
+        size[p2] += size[p1];
+        return find(p2);
     }
 }
 
@@ -120,8 +111,8 @@ class Solution {
         for (int num : nums) {
             for (int i = 2; i <= (int)Math.sqrt(num); i++) {
                 if (num % i == 0) {
-                    dsu.union(i, num);
-                    dsu.union(num / i, num);
+                    dsu.union(num, num / i);
+                    dsu.union(num, i);
                 }
             }
         }
@@ -132,7 +123,7 @@ class Solution {
         // get the answer;
         int ans = 0;
         for (int num : nums) {
-            int p = dsu.findParent(num);
+            int p = dsu.find(num);
             map.put(p, map.getOrDefault(p, 0) + 1);
             if (map.get(p) > ans) ans += 1;
         }
