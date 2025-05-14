@@ -6,45 +6,42 @@
 
 // @lc code=start
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 class File {
-    boolean isFile = false;
     String content = "";
-    Map<String, File> map = new HashMap<>();
+    boolean isFile = false;
+    Map<String, File> sub;
+
+    public File() {
+        sub = new HashMap();
+    }
 }
 
 class FileSystem {
     File root;
-
     public FileSystem() {
-        root = new File();    
+        root = new File();
     }
     
     public List<String> ls(String path) {
-        if (path.equals("/") == true) {
-            List<String> ret = new ArrayList<>();
-            for (Map.Entry<String, File> entry : root.map.entrySet()) {
-                ret.add(entry.getKey());
+        List<String> ret = new ArrayList();
+        if (path.equals("/")) {
+            for (Map.Entry<String, File> f : root.sub.entrySet()) {
+                ret.add(f.getKey());
             }
             Collections.sort(ret);
             return ret;
         }
+
         String[] paths = path.split("/");
-        List<String> ret = new ArrayList<>();
         File node = root;
         for (int i = 1; i < paths.length; i++) {
-            node = node.map.get(paths[i]);
+            String current = paths[i];
+            node = node.sub.get(current);
         }
-        if (node.isFile == true) {
-            ret.add(paths[paths.length - 1]);
-        } else {
-            for (Map.Entry<String, File> entry : node.map.entrySet()) {
-                ret.add(entry.getKey());
+        if (node.isFile) ret.add(paths[paths.length - 1]);
+        else {
+            for (Map.Entry<String, File> f : node.sub.entrySet()) {
+                ret.add(f.getKey());
             }
         }
         Collections.sort(ret);
@@ -55,8 +52,8 @@ class FileSystem {
         String[] paths = path.split("/");
         File node = root;
         for (int i = 1; i < paths.length; i++) {
-            if (node.map.containsKey(paths[i]) == false) node.map.put(paths[i], new File());
-            node = node.map.get(paths[i]);
+            if (node.sub.containsKey(paths[i]) == false) node.sub.put(paths[i], new File());
+            node = node.sub.get(paths[i]);
         }
     }
     
@@ -64,8 +61,8 @@ class FileSystem {
         String[] paths = filePath.split("/");
         File node = root;
         for (int i = 1; i < paths.length; i++) {
-            if (node.map.containsKey(paths[i]) == false) node.map.put(paths[i], new File());
-            node = node.map.get(paths[i]);
+            if (node.sub.containsKey(paths[i]) == false) node.sub.put(paths[i], new File());
+            node = node.sub.get(paths[i]);
         }
         node.isFile = true;
         node.content += content;
@@ -75,12 +72,21 @@ class FileSystem {
         String[] paths = filePath.split("/");
         File node = root;
         for (int i = 1; i < paths.length; i++) {
-            if (node.map.containsKey(paths[i]) == false) node.map.put(paths[i], new File());
-            node = node.map.get(paths[i]);
+            if (node.sub.containsKey(paths[i]) == false) node.sub.put(paths[i], new File());
+            node = node.sub.get(paths[i]);
         }
         return node.content;
     }
 }
+
+/**
+ * Your FileSystem object will be instantiated and called as such:
+ * FileSystem obj = new FileSystem();
+ * List<String> param_1 = obj.ls(path);
+ * obj.mkdir(path);
+ * obj.addContentToFile(filePath,content);
+ * String param_4 = obj.readContentFromFile(filePath);
+ */
 
 /**
  * Your FileSystem object will be instantiated and called as such:
