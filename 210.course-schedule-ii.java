@@ -6,47 +6,43 @@
 
 // @lc code=start
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         Map<Integer, Set<Integer>> indegrees = new HashMap();
         for (int i = 0; i < numCourses; i++) {
-            indegrees.put(i, new HashSet<>());
-        } 
-        for (int i = 0; i < prerequisites.length; i++) {
-            indegrees.get(prerequisites[i][0]).add(prerequisites[i][1]);
+            indegrees.put(i, new HashSet());
         }
+        for (int[] p : prerequisites) {
+            int from = p[1];
+            int to = p[0];
+            indegrees.get(to).add(from);
+        }
+        LinkedList<Integer> dq = new LinkedList<Integer>();
+        Set<Integer> visited = new HashSet();
 
-        Queue<Integer> q = new LinkedList<>();
-        Set<Integer> visited = new HashSet<>();
         for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) {
             if (entry.getValue().size() == 0) {
-                q.add(entry.getKey());
-                visited.add(entry.getKey());
+                dq.addLast(entry.getKey());
             }
         }
-        int[] ans = new int[numCourses];
-        int count = 0;
-        while (q.size() != 0) {
-            int c = q.poll();
-            ans[count++] = c;
-            
-            for (int i = 0; i < numCourses; i++) {
-                indegrees.get(i).remove(c);
-                if (indegrees.get(i).size() == 0 && visited.contains(i) == false) {
-                    q.add(i);
-                    visited.add(i);
+        int[] ret = new int[numCourses];
+        int index = -1;
+        while (dq.size() != 0) {
+            int popSize = dq.size();
+            for (int i = 0; i < popSize; i++) {
+                int current = dq.pollFirst();
+                visited.add(current);
+                ret[++index] = current;
+                for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) entry.getValue().remove(current);
+            }
+            for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) {
+                if (entry.getValue().size() == 0 && !visited.contains(entry.getKey())) {
+                    dq.addLast(entry.getKey());
                 }
             }
         }
-        if (count == numCourses) return ans;
-        return new int[0];
 
+        return index == numCourses - 1 ? ret : new int[0];
     }
 }
 // @lc code=end
