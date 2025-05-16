@@ -66,60 +66,45 @@
 
 // @lc code=start
 
-import java.util.Comparator;
-import java.util.TreeSet;
-
 class Solution {
-
+    int[] nums;
     public void balance(TreeSet<Integer> left, TreeSet<Integer> right) {
         while (right.size() < left.size()) {
             right.add(left.pollFirst());
         }
     }
 
-    public Double getNext(int k, TreeSet<Integer> left, TreeSet<Integer> right, int[] nums) {
-        if (k % 2 == 1) {
-            Double ret = Double.valueOf(nums[(int)(right.first())]);
-            return ret;
+    public double get(TreeSet<Integer> left, TreeSet<Integer> right) {
+        if (left.size() == right.size()) {
+            return ((double) nums[left.first()] + nums[right.first()]) / 2;
         }
-        else {
-            Double l =  Double.valueOf(nums[(int)(left.first())]);
-            Double r =  Double.valueOf(nums[(int)(right.first())]);
-            return (l + r) / 2.0;
-        }
+        return (double)nums[right.first()];
     }
 
     public double[] medianSlidingWindow(int[] nums, int k) {
-        Comparator<Integer> c = new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                if (nums[o1] == nums[o2]) return o1 - o2;
-                return nums[o1] - nums[o2];
-            }
-        };
-        
-        int n = nums.length;
-        TreeSet<Integer> left = new TreeSet(c.reversed());
-        TreeSet<Integer> right = new TreeSet(c);
-        
+        this.nums = nums;
+        Comparator<Integer> c = (a, b) -> nums[a] != nums[b] ? Integer.compare(nums[a], nums[b]) : a - b;
+        TreeSet<Integer> left = new TreeSet<Integer>(c.reversed());
+        TreeSet<Integer> right = new TreeSet<Integer>(c);
+        double[] ret = new double[nums.length - k + 1];
+        int index = 0;
         for (int i = 0; i < k; i++) {
             left.add(i);
         }
         balance(left, right);
-        double[] ans = new double[n - k + 1];
-        int index = 0;
-        ans[index++] = getNext(k, left, right, nums);
-        
-        for (int i = k; i < n; i++) {
-            left.remove(i - k);
-            right.remove(i - k);
-            left.add(i);
+        ret[index++] = get(left, right);
+        for (int i = k; i < nums.length; i++) {
+            if (!right.remove(i - k)) {
+                left.remove(i - k);
+            }
+            right.add(i);
+            left.add(right.pollFirst());
             balance(left, right);
-            ans[index++] = getNext(k, left, right, nums);
+            ret[index++] = get(left, right);
         }
-        return ans;
-
+        return ret;
     }
 }
+
 // @lc code=end
 
