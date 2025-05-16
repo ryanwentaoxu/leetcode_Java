@@ -6,23 +6,20 @@
 
 // @lc code=start
 
-import java.util.TreeMap;
-
 class SnapshotArray {
-    TreeMap<Integer, Integer>[] map;
     int snapId;
+    TreeMap<Integer, Integer>[] map;
 
     public SnapshotArray(int length) {
+        snapId = 0;
         map = new TreeMap[length];
         for (int i = 0; i < length; i++) {
-            map[i] = new TreeMap<>();
-            map[i].put(0, 0);
+            map[i] = new TreeMap();
+            map[i].put(snapId, 0);
         }
-        snapId = 0;
     }
     
     public void set(int index, int val) {
-        if (map[index] == null) map[index] = new TreeMap<>();
         map[index].put(snapId, val);
     }
     
@@ -30,7 +27,7 @@ class SnapshotArray {
         return snapId++;
     }
     
-    public int get(int index, int snap_id) {
+    public int get(int index, int snap_id) { 
         return map[index].floorEntry(snap_id).getValue();
     }
 }
