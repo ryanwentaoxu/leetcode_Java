@@ -6,61 +6,54 @@
 
 // @lc code=start
 class Solution {
-    int[][] directions = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    int numRows;
-    int numCols;
-    int[][] landHeights;
+    int[] xd = new int[] {-1, 1, 0, 0};
+    int[] yd = new int[] {0, 0, -1, 1};
+    public List<List<Integer>> pacificAtlantic(int[][] heights) {
+        int rows = heights.length;
+        int cols = heights[0].length;
 
-    public List<List<Integer>> pacificAtlantic(int[][] matrix) {
-        if (matrix.length == 0 || matrix[0].length == 0) return new ArrayList();
-        numRows = matrix.length;
-        numCols = matrix[0].length;
-        landHeights = matrix;
-        boolean[][] pr = new boolean[numRows][numCols];
-        boolean[][] ar = new boolean[numRows][numCols];
+        boolean[][] pr = new boolean[rows][cols];
+        boolean[][] ar = new boolean[rows][cols];
 
-        for (int i = 0; i < numRows; i++) {
-            dfs(i, 0, pr);
-            dfs(i, numCols - 1, ar);
+        for (int i = 0; i < rows; i++) {
+            dfs(i, 0, pr, heights);
+            dfs(i, cols - 1, ar, heights);
         }
 
-        for (int i = 0; i < numCols; i++) {
-            dfs(0, i, pr);
-            dfs(numRows - 1, i, ar);
+        for (int i = 0; i < cols; i++) {
+            dfs(0, i, pr, heights);
+            dfs(rows - 1, i, ar, heights);
         }
 
-        List<List<Integer>> commonCells = new ArrayList();
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
+        List<List<Integer>> ret = new ArrayList();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 if (pr[i][j] && ar[i][j]) {
-                    commonCells.add(List.of(i, j));
+                    List<Integer> tmp = new ArrayList();
+                    tmp.add(i);
+                    tmp.add(j);
+                    ret.add(tmp);
                 }
             }
         }
-        return commonCells;
+        return ret;
     }
 
-    private void dfs(int row, int col, boolean[][] reachable) {
-        // This cell is reachable, so mark it
-        reachable[row][col] = true;
-        for (int[] dir : directions) { // Check all 4 directions
-            int newRow = row + dir[0];
-            int newCol = col + dir[1];
-            // Check if new cell is within bounds
-            if (newRow < 0 || newRow >= numRows || newCol < 0 || newCol >= numCols) {
+    public void dfs(int x, int y, boolean[][] reachable, int[][] heights) {
+        reachable[x][y] = true;
+        for (int i = 0; i < 4; i++) {
+            int nx = x + xd[i];
+            int ny = y + yd[i];
+            if (nx < 0 || nx >= heights.length || ny < 0 || ny >= heights[0].length) {
                 continue;
             }
-            // Check that the new cell hasn't already been visited
-            if (reachable[newRow][newCol]) {
+            if (reachable[nx][ny]) {
                 continue;
             }
-            // Check that the new cell has a higher or equal height,
-            // So that water can flow from the new cell to the old cell
-            if (landHeights[newRow][newCol] < landHeights[row][col]) {
+            if (heights[x][y] > heights[nx][ny]) {
                 continue;
             }
-            // If we've gotten this far, that means the new cell is reachable
-            dfs(newRow, newCol, reachable);
+            dfs(nx, ny, reachable, heights);
         }
     }
 }
