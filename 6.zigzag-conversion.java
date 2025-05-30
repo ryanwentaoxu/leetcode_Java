@@ -7,28 +7,28 @@
 // @lc code=start
 class Solution {
     public String convert(String s, int numRows) {
-        if (numRows == 1) {
-            return s;
-        }
-        String[] rows = new String[numRows];
-        Arrays.fill(rows, "");
-        boolean backward = true;
+        if (numRows == 1) return s;
         int index = 0;
-        for (char c : s.toCharArray()) {
-            rows[index] += String.valueOf(c);
-            if (index == 0 || index == numRows - 1) {
+        boolean backward = false;
+        String[] ret = new String[numRows];
+        for (int i = 0; i < numRows; i++) {
+            ret[i] = "";
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            ret[index] += String.valueOf(s.charAt(i));
+            if (!backward) {
+                index += 1;
+            } else {
+                index -= 1;
+            }
+            if (index == numRows - 1 || index == 0) {
                 backward = !backward;
             }
-            if (backward) {
-                index -= 1;
-            } else {
-                index += 1;
-            }
         }
+
         String ans = "";
-        for (String ss : rows) {
-            ans += ss;
-        }
+        for (String r : ret) ans += r;
         return ans;
     }
 }
