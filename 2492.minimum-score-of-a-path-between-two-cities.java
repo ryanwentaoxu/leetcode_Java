@@ -5,55 +5,61 @@
  */
 
 // @lc code=start
-class UnionFind {
+class DSU {
+    int s;
     int[] parent;
-    int[] rank;
+    int[] size;
 
-    public UnionFind(int size) {
-        parent = new int[size];
-        for (int i = 0; i < size; i++) {
+    public DSU(int s) {
+        this.s = s;
+        parent = new int[s + 1];
+        size = new int[s + 1];
+        for (int i = 1; i <= s; i++) {
             parent[i] = i;
+            size[i] = 1;
         }
-        rank = new int[size];
     }
 
     public int find(int x) {
-        if (parent[x] != x) {
-            parent[x] = find(parent[x]);
+        int px = parent[x];
+        if (x != px) {
+            parent[x] = find(px);
         }
         return parent[x];
     }
 
-    public void union_set(int x, int y) {
-        int xset = find(x);
-        int yset = find(y);
-        if (xset == yset) return;
+    public int union(int x, int y) {
+        int px = find(x);
+        int py = find(y);
+        if (px == py) return px;
 
-        if (rank[xset] > rank[yset]) {
-            int tmp = xset;
-            xset = yset;
-            yset = tmp;
+        if (size[px] > size[py]) {
+            int tmp = px;
+            px = py;
+            py = tmp;
         }
-        parent[xset] = yset;
-        rank[yset] += rank[xset];
+
+        parent[px] = py;
+        size[py] += size[px];
+        return py;
     }
 }
 
+
 class Solution {
     public int minScore(int n, int[][] roads) {
-        UnionFind dsu = new UnionFind(n + 1);
-        int answer = Integer.MAX_VALUE;
-        
+        DSU dsu = new DSU(n);
         for (int[] road : roads) {
-            dsu.union_set(road[0], road[1]);
+            dsu.union(road[0], road[1]);
         }
+        int ans = Integer.MAX_VALUE;
 
         for (int[] road : roads) {
-            if (dsu.find(1) == dsu.find(road[0])) {
-                answer = Math.min(answer, road[2]);
-            }
+            if (dsu.find(road[0]) == dsu.find(1)) {
+                ans = Math.min(ans, road[2]);
+            } 
         }
-        return answer;
+        return ans;
     }
 }
 // @lc code=end
