@@ -7,31 +7,32 @@
 // @lc code=start
 class Solution {
     public int longestPalindrome(String[] words) {
-        final int alphabetSize = 26;
-        int[][] count = new int[alphabetSize][alphabetSize];
+        int R = 26;
+        int[][] dp = new int[R][R];
         for (String word : words) {
-            count[word.charAt(0) - 'a'][word.charAt(1) - 'a'] ++;
+            dp[(int)(word.charAt(0) - 'a')][(int)(word.charAt(1) - 'a')] += 1;
         }
 
-        int answer = 0;
+        int ans = 0;
         boolean central = false;
-        
-        for (int i = 0; i < alphabetSize; i++) {
-            if (count[i][i] % 2 == 0) {
-                answer += count[i][i];
+        for (int i = 0; i < R; i++) {
+            int current = dp[i][i];
+            
+            if (current % 2 == 0) {
+                ans += dp[i][i]; 
             } else {
-                answer += count[i][i] - 1;
+                ans += dp[i][i] - 1;
                 central = true;
             }
-            for (int j = i + 1; j < alphabetSize; j++) {
-                answer += 2 * Math.min(count[i][j], count[j][i]);
+
+            for (int j = i + 1; j < R; j++) {
+                ans += 2 * Math.min(dp[i][j], dp[j][i]);
             }
         }
 
-        if (central) {
-            answer ++;
-        }
-        return 2 * answer;
+        if (central) ans += 1;
+
+        return 2 * ans;
     }
 }
 // @lc code=end
