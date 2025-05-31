@@ -80,17 +80,23 @@
 // @lc code=start
 class Solution {
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        int[] distance = new int[n];
-        Arrays.fill(distance, Integer.MAX_VALUE);
-        distance[src] = 0;
-        for (int i = 1; i <= k + 1; i++) {
-            int[] tmp = Arrays.copyOf(distance, n);
+        int[] dp = new int[n];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[src] = 0;
+        for (int i = 0; i <= k; i++) {
+            int[] tmp = new int[n];
+            tmp = Arrays.copyOf(dp, n);
             for (int[] f : flights) {
-                if (distance[f[0]] != Integer.MAX_VALUE) tmp[f[1]] = Math.min(distance[f[0]] + f[2], tmp[f[1]]);
+                int from = f[0];
+                int to = f[1];
+                int distance = f[2];
+                if (dp[from] != Integer.MAX_VALUE) {
+                    tmp[to] = Math.min(dp[from] + distance, tmp[to]);
+                }
             }
-            distance = tmp;
+            dp = tmp;
         }
-        return distance[dst] == Integer.MAX_VALUE ? -1 : distance[dst];
+        return dp[dst] == Integer.MAX_VALUE ? -1 : dp[dst];
     }
 }
 // @lc code=end
