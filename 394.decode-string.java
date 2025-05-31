@@ -1,0 +1,37 @@
+/*
+ * @lc app=leetcode id=394 lang=java
+ *
+ * [394] Decode String
+ */
+
+// @lc code=start
+class Solution {
+    int index = 0;
+    public String decodeString(String s) {
+        StringBuilder sb = new StringBuilder();
+        while (index < s.length() && s.charAt(index) != ']'){
+            if (!Character.isDigit(s.charAt(index))) {
+                sb.append(String.valueOf(s.charAt(index)));
+                index += 1;
+            } else {
+                int num = 0;
+                while (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+                    num = num * 10 + (int)(s.charAt(index) - '0');
+                    index += 1;
+                }
+                index += 1;
+                String tmp = decodeString(s);
+                index += 1;
+                int count = 0;
+                while (count < num) {
+                    count += 1;
+                    sb.append(tmp);
+                }
+                num = 0;
+            }
+        }
+        return sb.toString();
+    }
+}
+// @lc code=end
+
