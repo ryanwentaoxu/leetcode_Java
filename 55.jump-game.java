@@ -7,10 +7,12 @@
 // @lc code=start
 class Solution {
     public boolean canJump(int[] nums) {
-        int lastPos = nums.length - 1;
-        int n = nums.length - 1;
-        for (int i = n; i >= 0; i--) {
-            if (nums[i] + i >= lastPos) lastPos = i;
+        int n = nums.length;
+        int lastPos = n - 1;
+        for (int i = n - 2; i >= 0; i--) {
+            if (i + nums[i] >= lastPos) {
+                lastPos = i;
+            }
         }
         return lastPos == 0;
     }
