@@ -37,43 +37,44 @@
  */
 class Solution {
     public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
-        LinkedList<TreeNode> queue = new LinkedList();
         Set<Integer> td = new HashSet();
         for (int n : to_delete) {
             td.add(n);
         }
-        List<TreeNode> ans = new ArrayList();
-        queue.add(root);
-        while (queue.size() != 0) {
-            TreeNode current = queue.pollFirst();
+
+        List<TreeNode> ret = new ArrayList();
+
+        LinkedList<TreeNode> q = new LinkedList();
+        q.add(root);
+        while (!q.isEmpty()) {
+            TreeNode node = q.pollFirst();
+            if (node.left != null) {
+                q.addLast(node.left);
+                if (td.contains(node.left.val)) {
+                    node.left = null;
+                }
+            }
             
-            if (current.left != null) {
-                queue.add(current.left);
-                if (td.contains(current.left.val)) {
-                    current.left = null;
+            if (node.right != null) {
+                q.addLast(node.right);
+                if (td.contains(node.right.val)) {
+                    node.right = null;
                 }
             }
 
-            if (current.right != null) {
-                queue.add(current.right);
-                if (td.contains(current.right.val)) {
-                    current.right = null;
+            if (td.contains(node.val)) {
+                if (node.left != null) {
+                    ret.add(node.left);
                 }
-            }
-
-            if (td.contains(current.val)) {
-                if (current.left != null) {
-                    ans.add(current.left);
-                }
-                if (current.right != null) {
-                    ans.add(current.right);
+                if (node.right != null) {
+                    ret.add(node.right);
                 }
             }
         }
 
-        if (!td.contains(root.val)) ans.add(root);
+        if (!td.contains(root.val)) ret.add(root);
 
-        return ans;
+        return ret;
     }
 }
 // @lc code=end
