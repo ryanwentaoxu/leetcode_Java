@@ -7,26 +7,26 @@
 // @lc code=start
 class Solution {
     public int maximumSwap(int num) {
-        int maxIndex = -1;
+        int swapId1 = -1;
+        int swapId2 = -1;
+        int maxId = -1;
         char[] nums = String.valueOf(num).toCharArray();
-        int swapIndex1 = -1;
-        int swapIndex2 = -1;
+
         for (int i = nums.length - 1; i >= 0; i--) {
-            if (maxIndex == -1 || nums[i] > nums[maxIndex]) maxIndex = i;
-            else if (nums[i] < nums[maxIndex]) {
-                swapIndex1 = i;
-                swapIndex2 = maxIndex;   
+            if (maxId == -1 || (int)(nums[i] - '0') > (int)(nums[maxId] - '0')) {
+                maxId = i;
+            } else if ((int)(nums[i] - '0') < (int)(nums[maxId] - '0')) {
+                swapId1 = i;
+                swapId2 = maxId;
             }
         }
 
-        if (swapIndex1 != -1 && swapIndex2 != -1) {
-            char tmp = nums[swapIndex1];
-            nums[swapIndex1] = nums[swapIndex2];
-            nums[swapIndex2] = tmp;
+        if (swapId1 != -1 && swapId2 != -1) {
+            char tmp = nums[swapId1];
+            nums[swapId1] = nums[swapId2];
+            nums[swapId2] = tmp;
         }
-        
-        String n = new String(nums);
-        return Integer.valueOf(n);
+        return Integer.parseInt(new String(nums));
     }
 }
 // @lc code=end
