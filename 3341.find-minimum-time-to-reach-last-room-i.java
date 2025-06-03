@@ -9,7 +9,8 @@ class State implements Comparable<State> {
     int x;
     int y;
     int dist;
-    State(int x, int y, int dist) {
+
+    public State(int x, int y, int dist) {
         this.x = x;
         this.y = y;
         this.dist = dist;
@@ -27,32 +28,36 @@ class Solution {
         int rows = moveTime.length;
         int cols = moveTime[0].length;
         int[][] d = new int[rows][cols];
-
         for (int[] dd : d) Arrays.fill(dd, INF);
-        d[0][0] = 0;
-        
         boolean[][] v = new boolean[rows][cols];
-        PriorityQueue<State> pq = new PriorityQueue<>();
-        State start = new State(0, 0, moveTime[0][0]);
+        v[0][0] = true;
+        State start = new State(0, 0, 0);
+        Comparator<State> c = new Comparator<State>(){
+            @Override
+            public int compare(State s1, State s2) {
+                return s1.dist - s2.dist;
+            }
+        };
+        PriorityQueue<State> pq = new PriorityQueue<State>(c);
         pq.offer(start);
-
-        int[] x = new int[] {1, -1, 0, 0};
-        int[] y = new int[] {0, 0, -1, 1};
+        int[] dx = new int[]{1, -1, 0, 0};
+        int[] dy = new int[]{0, 0, -1, 1};
         
         while (!pq.isEmpty()) {
             State current = pq.poll();
-            if (v[current.x][current.y]) continue;
             v[current.x][current.y] = true;
-            for (int i = 0; i < 4; i++) {
-                int nx = current.x + x[i];
-                int ny = current.y + y[i];
+            int dist = current.dist;
+            for (int i = 0;i < 4; i++) {
+                int nx = current.x + dx[i];
+                int ny = current.y + dy[i];
                 if (nx < 0 || nx >= rows || ny < 0 || ny >= cols) continue;
-
-                int dist = Math.max(d[current.x][current.y], moveTime[nx][ny]) + 1;
-
-                if (d[nx][ny] > dist) {
-                    d[nx][ny] = dist;
-                    pq.offer(new State(nx, ny, dist));
+                if (v[nx][ny]) continue;
+                
+                int currentDist = Math.max(current.dist, moveTime[nx][ny]) + 1;
+                if (currentDist < d[nx][ny]) {
+                    State newState = new State(nx, ny, currentDist);
+                    pq.add(newState);
+                    d[nx][ny] = currentDist;
                 }
             }
         }
