@@ -7,18 +7,19 @@
 // @lc code=start
 class Solution {
     public int maxProfit(int[] prices) {
-        int peak = prices[0];
-        int valley = prices[0];
-        int ans = 0;
+        int high = prices[0];
+        int low = prices[0];
         int i = 0;
-        while (i < prices.length - 1) {
-            while (i < prices.length - 1 && prices[i] >= prices[i + 1]) i++;
-            valley = prices[i];
-            while (i < prices.length - 1 && prices[i] <= prices[i + 1]) i++;
-            peak = prices[i];
-            ans += peak - valley;
+        int ans = 0;
+        while (i < prices.length) {
+            while (i < prices.length - 1 && prices[i] >= prices[i + 1]) i+= 1;
+            high = prices[i];
+            while (i < prices.length - 1 && prices[i] <= prices[i + 1]) i+= 1;
+            low = prices[i];
+            ans += high - low;
+            i += 1;
         }
-        return ans;
+        return -ans;
     }
 }
 // @lc code=end
