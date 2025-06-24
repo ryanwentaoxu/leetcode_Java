@@ -6,26 +6,23 @@
 
 // @lc code=start
 class Solution {
-    public void swap(int[] nums, int index1 ,int index2) {
-        int tmp = nums[index1];
-        nums[index1] = nums[index2];
-        nums[index2] = tmp;
-    }
-
     public int firstMissingPositive(int[] nums) {
         int i = 0;
-        int n = nums.length;
         while (i < nums.length) {
-            int index = nums[i] - 1;
-            if (nums[i] > 0 && nums[i] <= n && nums[index] != nums[i]) {
-                swap(nums, i, index);
+            int currentIndex = nums[i] - 1;
+            if (nums[i] > 0 && nums[i] <= nums.length && nums[i] != nums[currentIndex]) {
+                int tmp = nums[currentIndex];
+                nums[currentIndex] = nums[i];
+                nums[i] = tmp;
             } else {
-                i++;
+                i += 1;
             }
         }
-
-        for (i = 0; i < n; i++) {
-            if (nums[i] != i + 1) return i + 1;
+        
+        for (i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
         }
         return nums.length + 1;
     }
