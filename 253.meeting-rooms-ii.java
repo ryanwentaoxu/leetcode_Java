@@ -7,30 +7,26 @@
 // @lc code=start
 class Solution {
     public int minMeetingRooms(int[][] intervals) {
-        Arrays.sort(intervals, (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
-        List<List<int[]>> rooms = new ArrayList();
+        int[] start = new int[intervals.length];
+        int[] end = new int[intervals.length];
         for (int i = 0; i < intervals.length; i++) {
-            int[] current = intervals[i];
-            if (rooms.size() == 0) {
-                rooms.add(new ArrayList());
-                rooms.get(0).add(current);
-            } else {
-                boolean added = false;
-                for (int j = 0; j < rooms.size(); j++) {
-                    int[] prev = rooms.get(j).get(rooms.get(j).size() - 1);
-                    if (prev[1] <= current[0]) {
-                        added = true;
-                        rooms.get(j).add(current);
-                        break;
-                    }
-                }
-                if (!added) {
-                    rooms.add(new ArrayList());
-                    rooms.get(rooms.size() - 1).add(current);   
-                }
-            }
+            start[i] = intervals[i][0];
+            end[i] = intervals[i][1];
         }
-        return rooms.size();
+        Arrays.sort(start);
+        Arrays.sort(end);
+        int ans = 0;
+        int startPointer = 0;
+        int endPointer = 0;
+        while (startPointer < intervals.length) {
+            if (start[startPointer] >= end[endPointer]) {
+                ans -= 1;
+                endPointer += 1;
+            }
+            ans += 1;
+            startPointer += 1;
+        }
+        return ans;
     }
 }
 // @lc code=end
