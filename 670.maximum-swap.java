@@ -7,26 +7,28 @@
 // @lc code=start
 class Solution {
     public int maximumSwap(int num) {
+        int maxId = -1;
         int swapId1 = -1;
         int swapId2 = -1;
-        int maxId = -1;
-        char[] nums = String.valueOf(num).toCharArray();
-
-        for (int i = nums.length - 1; i >= 0; i--) {
-            if (maxId == -1 || (int)(nums[i] - '0') > (int)(nums[maxId] - '0')) {
-                maxId = i;
-            } else if ((int)(nums[i] - '0') < (int)(nums[maxId] - '0')) {
-                swapId1 = i;
+        int index = (String.valueOf(num).toCharArray()).length - 1;
+        char[] numc = String.valueOf(num).toCharArray();
+        while (index >= 0) {
+            if (maxId == -1 || (numc[index] - '0') > (numc[maxId] - '0')) {
+                maxId = index;
+            } else if (numc[index] - '0' < numc[maxId] - '0') {
+                swapId1 = index;
                 swapId2 = maxId;
             }
+            index -= 1;
         }
-
         if (swapId1 != -1 && swapId2 != -1) {
-            char tmp = nums[swapId1];
-            nums[swapId1] = nums[swapId2];
-            nums[swapId2] = tmp;
+            char[] n = String.valueOf(num).toCharArray();
+            char n1 = n[swapId1];
+            n[swapId1] = n[swapId2];
+            n[swapId2] = n1;
+            return Integer.parseInt(String.valueOf(n));
         }
-        return Integer.parseInt(new String(nums));
+        return num;
     }
 }
 // @lc code=end
