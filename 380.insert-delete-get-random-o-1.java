@@ -5,28 +5,24 @@
  */
 
 // @lc code=start
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 class RandomizedSet {
-    List<Integer> container;
     Map<Integer, Integer> map;
-    int size;
+    List<Integer> list;
     Random rnd;
+    int size;
 
     public RandomizedSet() {
-        size = 0;
-        container = new ArrayList();
         map = new HashMap();
+        list = new ArrayList();
         rnd = new Random();
+        size = 0; 
     }
     
     public boolean insert(int val) {
         if (map.containsKey(val)) return false;
-        container.add(size, val);
         map.put(val, size);
-        size++;
+        list.add(val);
+        size += 1;
         return true;
     }
     
@@ -34,24 +30,23 @@ class RandomizedSet {
         if (!map.containsKey(val)) return false;
         if (size == 1) {
             map.remove(val);
-            size--;
+            list.removeLast();
+            size -= 1;
         } else {
-            int idx = map.get(val);
+            int index = map.get(val);
+            int tailVal = list.get(size - 1);
+            map.put(tailVal, index);
             map.remove(val);
-            if (idx == size - 1) {
-                size --;
-                return true;
-            }
-            int tail = container.get(size - 1);
-            container.set(idx, tail);
-            map.put(tail, idx);
-            size--;
+            list.set(index, tailVal);
+            list.removeLast();
+            size -= 1;
         }
         return true;
     }
     
     public int getRandom() {
-        return container.get(rnd.nextInt(size));
+        int index = rnd.nextInt(size);
+        return list.get(index);
     }
 }
 
