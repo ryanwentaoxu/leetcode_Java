@@ -9,40 +9,39 @@
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         Map<Integer, Set<Integer>> indegrees = new HashMap();
+        Map<Integer, Set<Integer>> outdegrees = new HashMap();
         for (int i = 0; i < numCourses; i++) {
             indegrees.put(i, new HashSet());
+            outdegrees.put(i, new HashSet());
         }
         for (int[] p : prerequisites) {
-            int from = p[1];
-            int to = p[0];
-            indegrees.get(to).add(from);
+            indegrees.get(p[0]).add(p[1]);
+            outdegrees.get(p[1]).add(p[0]);
         }
-        LinkedList<Integer> dq = new LinkedList<Integer>();
-        Set<Integer> visited = new HashSet();
-
+        
+        Deque<Integer> q = new ArrayDeque();
         for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) {
             if (entry.getValue().size() == 0) {
-                dq.addLast(entry.getKey());
+                q.addLast(entry.getKey());
             }
         }
-        int[] ret = new int[numCourses];
-        int index = -1;
-        while (dq.size() != 0) {
-            int popSize = dq.size();
-            for (int i = 0; i < popSize; i++) {
-                int current = dq.pollFirst();
+        int[] ans = new int[numCourses];
+        Set<Integer> visited = new HashSet();
+        int index = 0;
+        while (q.size() != 0) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                int current = q.removeFirst();
                 visited.add(current);
-                ret[++index] = current;
-                for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) entry.getValue().remove(current);
-            }
-            for (Map.Entry<Integer, Set<Integer>> entry : indegrees.entrySet()) {
-                if (entry.getValue().size() == 0 && !visited.contains(entry.getKey())) {
-                    dq.addLast(entry.getKey());
+                ans[index++] = current;
+                Set<Integer> involved = outdegrees.get(current);
+                for (int c : involved) {
+                    indegrees.get(c).remove(current);
+                    if (indegrees.get(c).size() == 0 && !visited.contains(c)) q.addLast(c);
                 }
             }
         }
-
-        return index == numCourses - 1 ? ret : new int[0];
+        return index == numCourses ? ans : new int[] {};
     }
 }
 // @lc code=end
