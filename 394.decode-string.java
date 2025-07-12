@@ -15,17 +15,17 @@ class Solution {
                 index += 1;
             } else {
                 int num = 0;
-                while (index < s.length() && Character.isDigit(s.charAt(index))) {
+                while (Character.isDigit(s.charAt(index))) {
                     num = num * 10 + (int)(s.charAt(index) - '0');
                     index += 1;
                 }
                 index += 1;
-                String next = decodeString(s);
+                String sub = decodeString(s);
+                for (int i = 1; i <= num; i++) sb.append(sub);
                 index += 1;
-                for (int tmp = 0; tmp < num; tmp++) sb.append(next);
             }
-        }
-        return sb.toString();
+        }   
+        return sb.toString(); 
     }
 }
 // @lc code=end
