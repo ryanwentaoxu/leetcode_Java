@@ -1,34 +1,29 @@
-
 class TicTacToe {
     int[] rows;
     int[] cols;
     int diagonal;
-    int antiDiagonal;
+    int antiDiag;
+
 
     public TicTacToe(int n) {
         rows = new int[n];
-        cols = new int[n];   
+        cols = new int[n];
+        diagonal = 0;
+        antiDiag = 0;
     }
     
     public int move(int row, int col, int player) {
-        int currentPlayer = (player == 1) ? 1 : -1;
-        rows[row] += currentPlayer;
-        cols[col] += currentPlayer;
-        if (row == col) {
-            diagonal += currentPlayer;
-        }
-        if (col == (cols.length - row - 1)) {
-            antiDiagonal += currentPlayer;
-        }
+        int p = player == 1 ? 1 : -1;
+        rows[row] += p;
+        cols[col] += p;
+        if (row == col) diagonal += p;
+        if (row + col + 1 == rows.length) antiDiag += p;
         int n = rows.length;
-        if (Math.abs(rows[row]) == n ||
-                Math.abs(cols[col]) == n ||
-                Math.abs(diagonal) == n ||
-                Math.abs(antiDiagonal) == n) {
-            return player;
-        }
-        // No one wins
-        return 0;
+        if (Math.abs(rows[row]) == n) return player;
+        if (Math.abs(cols[col]) == n) return player;
+        if (Math.abs(diagonal) == n) return player;
+        if (Math.abs(antiDiag) == n) return player;
+        return 0; 
     }
 }
 
