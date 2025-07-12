@@ -1,26 +1,43 @@
 class Solution {
-    public int multi(int[] l1, int[] l2) {
-        int ans = 0;
-        for (int i = 0; i < l1.length; i++) ans += l1[i] * l2[i];
-        return ans;
-    }
+    public ArrayList<ArrayList<Pair<Integer, Integer>>> compressMatrix(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
 
-    public int[][] multiply(int[][] mat1, int[][] mat2) {
-        int row1 = mat1.length;
-        int col1 = mat1[0].length;
-        int row2 = mat2.length;
-        int col2 = mat2[0].length;
-        int[][] ret = new int[row1][col2];
-        for (int i = 0; i < row1; i++) {
-            for (int j = 0; j < col2; j++) {
-                int[] l1 = mat1[i];
-                int[] l2 = new int[row2];
-                for (int k = 0; k < row2; k++) {
-                    l2[k] = mat2[k][j];
+        ArrayList<ArrayList<Pair<Integer, Integer>>> CM = new ArrayList(0);
+        for (int row = 0; row < rows; row++) {
+            ArrayList<Pair<Integer, Integer>> currRow = new ArrayList();
+            for (int col = 0; col < cols; col++) {
+                if (matrix[row][col] != 0) {
+                    currRow.add(new Pair(matrix[row][col], col));
                 }
-                ret[i][j] = multi(l1, l2);
+            }
+            CM.add(currRow);
+        }
+        return CM;
+
+    }
+    public int[][] multiply(int[][] mat1, int[][] mat2) {
+        int m = mat1.length;
+        int k = mat1[0].length;
+        int n = mat2[0].length;
+        ArrayList<ArrayList<Pair<Integer, Integer>>> A = compressMatrix(mat1);
+        ArrayList<ArrayList<Pair<Integer, Integer>>> B = compressMatrix(mat2);
+        int[][] ans = new int[m][n];
+        for (int mat1Row = 0; mat1Row < m; ++mat1Row) {
+            // Iterate on all current 'row' non-zero elements of mat1.
+            for (Pair mat1Element : A.get(mat1Row)) {
+                int element1 = (int)mat1Element.getKey();
+                int mat1Col = (int)mat1Element.getValue();
+
+                // Multiply and add all non-zero elements of mat2
+                // where the row is equal to col of current element of mat1.
+                for (Pair mat2Element : B.get(mat1Col)) {
+                    int element2 = (int)mat2Element.getKey();
+                    int mat2Col = (int)mat2Element.getValue();                 
+                    ans[mat1Row][mat2Col] += element1 * element2;
+                }
             }
         }
-        return ret;
+        return ans;
     }
 }
