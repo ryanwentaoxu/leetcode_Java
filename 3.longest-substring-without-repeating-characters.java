@@ -12,19 +12,19 @@ class Solution {
         int ans = 0;
         Map<Character, Integer> map = new HashMap();
         while (left <= right && right <= s.length()) {
-            if (map.size() == (right - left)) {
-                ans = Math.max(ans, (right - left));
+            if (map.size() == right - left) {
+                ans = Math.max(ans, map.size());
             }
-            if (map.size() == (right - left) && right < s.length()) {
-                map.put(s.charAt(right), map.getOrDefault(s.charAt(right), 0) + 1);
+            if (right < s.length() && !map.containsKey(s.charAt(right))) {
+                map.put(s.charAt(right), 1);
                 right += 1;
             } else {
                 if (left == s.length()) break;
-                map.put(s.charAt(left), map.get(s.charAt(left)) - 1);
-                if (map.get(s.charAt(left)) == 0) map.remove(s.charAt(left));
+                map.remove(s.charAt(left));
                 left += 1;
             }
         }
+
         return ans;
     }
 }
