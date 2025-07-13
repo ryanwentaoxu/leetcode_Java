@@ -17,38 +17,40 @@ class Node {
 };
 */
 
+
 class Solution {
-    public Node[] helper(Node head) {
-        Node node = head;
+    public Node[] helper(Node node) {
+        Node current = node;
+        Node head = current;
         Node tail = head;
-        while (node != null) {
-            Node nextNode = node.next;
-            if (node.child != null) {
-                Node[] children = helper(node.child);
-                node.child = null;
-                node.next = children[0];
-                children[0].prev = node;
-                if (nextNode == null) {
+        while (current != null) {
+            Node next = current.next;
+            if (current.child != null) {
+                Node[] children = helper(current.child);
+                current.child = null;
+                current.next = children[0];
+                children[0].prev = current;
+                if (next == null) {
                     tail = children[1];
                     break;
                 } else {
-                    nextNode.prev = children[1];
-                    children[1].next = nextNode;
-                    node = nextNode;
-                    tail = nextNode;
+                    children[1].next = next;
+                    next.prev = children[1];
+                    tail = next;
+                    current = next;
                 }
             } else {
-                tail = node;
-                node = nextNode;
+                tail = current;
+                current = next;
             }
-            
         }
         return new Node[]{head, tail};
     }
     public Node flatten(Node head) {
         if (head == null) return null;
-        Node[] nodes = helper(head);
-        return nodes[0];
+        Node node = head;
+        Node[] tmp = helper(node);
+        return tmp[0];
     }
 }
 // @lc code=end
