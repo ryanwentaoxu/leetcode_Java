@@ -1,43 +1,34 @@
 class Solution {
-    public ArrayList<ArrayList<Pair<Integer, Integer>>> compressMatrix(int[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-
-        ArrayList<ArrayList<Pair<Integer, Integer>>> CM = new ArrayList(0);
-        for (int row = 0; row < rows; row++) {
-            ArrayList<Pair<Integer, Integer>> currRow = new ArrayList();
-            for (int col = 0; col < cols; col++) {
-                if (matrix[row][col] != 0) {
-                    currRow.add(new Pair(matrix[row][col], col));
+    public Map<Integer, List<Pair<Integer, Integer>>> compress(int[][] matrix) {
+        Map<Integer, List<Pair<Integer, Integer>>> map = new HashMap();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] != 0) {
+                    List<Pair<Integer, Integer>> list = map.getOrDefault(i, new ArrayList());
+                    list.add(new Pair(matrix[i][j], j));
+                    map.put(i, list);
                 }
             }
-            CM.add(currRow);
         }
-        return CM;
-
+        return map;
     }
     public int[][] multiply(int[][] mat1, int[][] mat2) {
-        int m = mat1.length;
-        int k = mat1[0].length;
-        int n = mat2[0].length;
-        ArrayList<ArrayList<Pair<Integer, Integer>>> A = compressMatrix(mat1);
-        ArrayList<ArrayList<Pair<Integer, Integer>>> B = compressMatrix(mat2);
-        int[][] ans = new int[m][n];
-        for (int mat1Row = 0; mat1Row < m; ++mat1Row) {
-            // Iterate on all current 'row' non-zero elements of mat1.
-            for (Pair mat1Element : A.get(mat1Row)) {
-                int element1 = (int)mat1Element.getKey();
-                int mat1Col = (int)mat1Element.getValue();
-
-                // Multiply and add all non-zero elements of mat2
-                // where the row is equal to col of current element of mat1.
-                for (Pair mat2Element : B.get(mat1Col)) {
-                    int element2 = (int)mat2Element.getKey();
-                    int mat2Col = (int)mat2Element.getValue();                 
-                    ans[mat1Row][mat2Col] += element1 * element2;
+        Map<Integer, List<Pair<Integer, Integer>>> cm1 = compress(mat1);
+        Map<Integer, List<Pair<Integer, Integer>>> cm2 = compress(mat2);
+        int[][] ret = new int[mat1.length][mat2[0].length];
+        for (Map.Entry<Integer, List<Pair<Integer, Integer>>> entry : cm1.entrySet()) {
+            int row1 = entry.getKey();
+            for (Pair<Integer, Integer> p : entry.getValue()) {
+                int el1 = p.getKey();
+                int row2 = p.getValue();
+                List<Pair<Integer, Integer>> tmp = cm2.getOrDefault(row2, new ArrayList());
+                for (Pair<Integer, Integer> p2 : tmp) {
+                    int el2 = p2.getKey();
+                    int col2 = p2.getValue();
+                    ret[row1][col2] += el1 * el2;
                 }
             }
         }
-        return ans;
+        return ret;
     }
 }
