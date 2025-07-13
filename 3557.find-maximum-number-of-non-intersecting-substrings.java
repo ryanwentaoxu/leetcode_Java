@@ -7,20 +7,17 @@
 // @lc code=start
 class Solution {
     public int maxSubstrings(String word) {
-        int res = 0;
-        String s = word;
-        int n = s.length();
-        Map<Character, Integer> pos = new HashMap();
-        for (int i = 0; i < n; i++) {
-            char c = s.charAt(i);
-            if (!pos.containsKey(c)) {
-                pos.put(c, i);
-            } else if (i - pos.get(c) + 1 >= 4) {
-                res += 1;
-                pos.clear();
+        int ans = 0;
+        Map<Character, Integer> map = new HashMap();
+        for (int i = 0; i < word.length(); i++) {
+            char current = word.charAt(i);
+            if (!map.containsKey(current)) map.put(current, i);
+            else if (i - map.get(current) + 1 >= 4) {
+                ans += 1;
+                map = new HashMap();
             }
         }
-        return res;
+        return ans;
     }
 }
 // @lc code=end
