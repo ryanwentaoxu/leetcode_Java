@@ -6,50 +6,53 @@
 
 // @lc code=start
 class Solution {
-    int getMaxUniqueLetters(String s) {
-        boolean map[] = new boolean[26];
-        int maxUnique = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (!map[s.charAt(i) - 'a']) {
-                maxUnique++;
-                map[s.charAt(i) - 'a'] = true;
-            }
+    public int count(String s) {
+        Map<Character, Integer> map = new HashMap();
+        for (char c : s.toCharArray()) {
+            map.put(c, 1);
         }
-        return maxUnique;
+        return map.size();
     }
 
     public int longestSubstring(String s, int k) {
-        char[] str = s.toCharArray();
-        int[] countMap = new int[26];
-        int maxUnique = getMaxUniqueLetters(s);
-        int result = 0;
-        for (int currUnique = 1; currUnique <= maxUnique; currUnique++) {
-            Arrays.fill(countMap, 0);
-            int windowStart = 0;
-            int windowEnd = 0;
-            int idx=  0;
+        int total = count(s);
+        int[] ncount = new int[26];
+        Arrays.fill(ncount, 0);
+        int ans = 0;
+        for (int i = 1; i <= total; i++) {
+            int kCount = 0;
             int unique = 0;
-            int countAtLeastK = 0;
-            while (windowEnd < str.length) {
-                if (unique <= currUnique) {
-                    idx = str[windowEnd] - 'a';
-                    if (countMap[idx] == 0) unique += 1;
-                    countMap[idx] += 1;
-                    if (countMap[idx] == k) countAtLeastK += 1;
-                    windowEnd += 1;
+            int left = 0;
+            int right = 0;
+            Arrays.fill(ncount, 0);
+            while (right < s.length()) {
+                if (unique <= i) {
+                    int idx = (int)(s.charAt(right) - 'a');
+                    ncount[idx] += 1;
+                    if (ncount[idx] == k) {
+                        kCount += 1;
+                    }
+                    if (ncount[idx] == 1) {
+                        unique += 1;
+                    }
+                    right += 1;
                 } else {
-                    idx = str[windowStart] - 'a';
-                    if (countMap[idx] == k) countAtLeastK -= 1;
-                    countMap[idx] -= 1;
-                    if (countMap[idx] == 0) unique -= 1;
-                    windowStart += 1;
+                    int idx = (int)(s.charAt(left) - 'a');
+                    ncount[idx] -= 1;
+                    if (ncount[idx] == k - 1) {
+                        kCount -= 1;
+                    }
+                    if (ncount[idx] == 0) {
+                        unique -= 1;
+                    }
+                    left += 1;
                 }
-                if (unique == currUnique && unique == countAtLeastK) {
-                    result = Math.max(windowEnd - windowStart, result);
+                if (unique == i && kCount == unique) {
+                    ans = Math.max(ans, right - left);
                 }
             }
         }
-        return result;
+        return ans;
     }
 }
 // @lc code=end
