@@ -7,41 +7,42 @@
 // @lc code=start
 class Solution {
     char[][] board;
-    int ROWS;
-    int COLS;
+    int[] dx = new int[]{-1, 1, 0, 0};
+    int[] dy = new int[]{0, 0, -1, 1};
 
     public boolean exist(char[][] board, String word) {
         this.board = board;
-        ROWS = board.length;
-        COLS = board[0].length;
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                boolean ret = dfs(i, j, word, 0);
-                if (ret == true) return true;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == word.charAt(0)) {
+                    int index = 0;
+                    boolean result = backtrack(i, j, index, word);
+                    if (result) return true;
+                }
             }
         }
         return false;
     }
 
-    public boolean isValid(int x, int y) {
-        if (x < 0 || x >= ROWS || y < 0 || y >= COLS) return false;
-        return true;
-    }
-
-    public boolean dfs(int i, int j, String word, int index) {
-        if (index == word.length() - 1 && word.charAt(index) == board[i][j]) return true;
-        if (word.charAt(index) != board[i][j]) return false;
-        this.board[i][j] = '*';
-        int[] x = {1, -1, 0, 0};
-        int[] y = {0, 0, 1, -1};
-        for (int t = 0; t < 4; t++) {
-            if (isValid(i + x[t], j + y[t]) == true) {
-                boolean next = dfs(i + x[t], j + y[t], word, index + 1);
-                if (next == true) return true;
+    public boolean backtrack(int row, int col, int index, String word) {
+        if (index == word.length()) return true;
+        if (word.charAt(index) != board[row][col]) return false;
+        if (index == word.length() - 1) return true;
+        char prev = board[row][col];
+        board[row][col] = '-';
+        boolean ret = false;
+        for (int i = 0; i < 4; i++) {
+            int nx = row + dx[i];
+            int ny = col + dy[i];
+            if (nx < 0 || nx >= board.length || ny < 0 || ny >= board[0].length) continue;
+            boolean result = backtrack(nx, ny, index + 1, word);
+            if (result) {
+                ret = ret || result;
+                break;
             }
         }
-        this.board[i][j] = word.charAt(index);
-        return false;
+        board[row][col] = prev;
+        return ret;
     }
 }
 // @lc code=end
