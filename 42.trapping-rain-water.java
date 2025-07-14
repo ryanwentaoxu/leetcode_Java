@@ -7,26 +7,23 @@
 // @lc code=start
 class Solution {
     public int trap(int[] height) {
-        int[] right_max = new int[height.length];
-        int[] left_max = new int[height.length];
-
-        right_max[height.length - 1] = Integer.MIN_VALUE;
-        left_max[0] = Integer.MIN_VALUE;
-        
-        int leftMax = height[0];
-        int rightMax= height[height.length - 1];
-        for (int i = 1; i < height.length; i++) {
-            leftMax = Math.max(leftMax, height[i - 1]);
-            left_max[i] = leftMax;
+        int n = height.length;
+        int[] leftMax = new int[n];
+        int[] rightMax = new int[n];
+        int lm = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            leftMax[i] = lm;
+            lm = Math.max(lm, height[i]);
         }
-
-        for (int i = height.length - 2; i >= 0; i--) {
-            rightMax = Math.max(rightMax, height[i + 1]);
-            right_max[i] = rightMax;
+        int rm = Integer.MIN_VALUE;
+        for (int i = n - 1; i >= 0; i--) {
+            rightMax[i] = rm;
+            rm = Math.max(rm, height[i]);
         }
         int ans = 0;
-        for (int i = 1; i < height.length - 1; i++) {
-            ans += Math.max(0, Math.min(right_max[i], left_max[i]) - height[i]);
+        for (int i = 0; i < n; i++) {
+            int upper = Math.min(rightMax[i], leftMax[i]);
+            if (upper >= height[i]) ans += upper - height[i];
         }
         return ans;
     }
