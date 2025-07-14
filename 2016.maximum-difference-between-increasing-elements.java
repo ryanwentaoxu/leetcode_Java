@@ -7,17 +7,13 @@
 // @lc code=start
 class Solution {
     public int maximumDifference(int[] nums) {
-        int n = nums.length;
-        int ans = -1;
-        int premin = nums[0];
-        for (int i = 1; i < n; i++) {
-            if (nums[i] > premin) {
-                ans = Math.max(ans, nums[i] - premin);
-            } else {
-                premin = nums[i];
-            }
+        int premin = Integer.MAX_VALUE;
+        int ans = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            if (premin < nums[i]) ans = Math.max(ans, nums[i] - premin);
+            else premin = nums[i];
         }
-        return ans;
+        return ans == Integer.MIN_VALUE ? -1 : ans;
     }
 }
 // @lc code=end
