@@ -8,27 +8,24 @@
 class Solution {
     public void nextPermutation(int[] nums) {
         int i = nums.length - 2;
-        int large = i;
-        while (i >= 0 && nums[i + 1] <= nums[i]) {
-            i -= 1;
-            large = i;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i = i - 1;
         }
-        int j = nums.length - 1;
-        if (large >= 0) {
+        if (i >= 0) {
+            int j = nums.length - 1;
             while (nums[j] <= nums[i]) {
                 j -= 1;
             }
-            swap(nums, large, j);
+            swap(nums, i, j);
         }
-        reverse(nums, large + 1);
+        reverse(nums, i + 1);
     }
 
-    public void swap(int[] nums, int i, int j) {
-        int tmp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = tmp;
+    public void swap(int[] nums, int index1, int index2) {
+        int tmp = nums[index1];
+        nums[index1] = nums[index2];
+        nums[index2] = tmp;
     }
-
     public void reverse(int[] nums, int start) {
         int left = start;
         int right = nums.length - 1;
