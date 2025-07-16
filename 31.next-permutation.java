@@ -11,6 +11,7 @@ class Solution {
         while (i >= 0 && nums[i] >= nums[i + 1]) {
             i = i - 1;
         }
+
         if (i >= 0) {
             int j = nums.length - 1;
             while (nums[j] <= nums[i]) {
@@ -21,11 +22,6 @@ class Solution {
         reverse(nums, i + 1);
     }
 
-    public void swap(int[] nums, int index1, int index2) {
-        int tmp = nums[index1];
-        nums[index1] = nums[index2];
-        nums[index2] = tmp;
-    }
     public void reverse(int[] nums, int start) {
         int left = start;
         int right = nums.length - 1;
@@ -34,6 +30,12 @@ class Solution {
             left += 1;
             right -= 1;
         }
+    }
+
+    public void swap(int[] nums, int index1 ,int index2) {
+        int tmp = nums[index1];
+        nums[index1] = nums[index2];
+        nums[index2] = tmp;
     }
 }
 // @lc code=end
