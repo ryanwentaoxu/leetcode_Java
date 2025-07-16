@@ -7,17 +7,18 @@
 // @lc code=start
 class Solution {
     public int subarraysDivByK(int[] nums, int k) {
-        int n = nums.length;
         int prefixMod = 0;
-        int result = 0;
-        int[] modGroups = new int[k];
-        modGroups[0] = 1;
-        for (int num : nums) {
-            prefixMod = (prefixMod + num % k + k) % k;
-            result += modGroups[prefixMod];
-            modGroups[prefixMod]++;
+        Map<Integer, Integer> map = new HashMap();
+        map.put(0, 1);
+        int ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            prefixMod = (prefixMod + nums[i] % k + k) % k;
+            if (map.containsKey(prefixMod)) {
+                ans += map.get(prefixMod);
+            }
+            map.put(prefixMod, map.getOrDefault(prefixMod, 0) + 1);
         }
-        return result;
+        return ans;
     }
 }
 // @lc code=end
