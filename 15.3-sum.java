@@ -6,34 +6,36 @@
 
 // @lc code=start
 class Solution {
+    List<List<Integer>> ans; 
     public List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
-        List<List<Integer>> ans = new ArrayList();
-        for (int i = 0; i < nums.length; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) continue;
-            helper(nums, nums[i], i + 1, ans);
+        ans = new ArrayList();
+        for(int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            } 
+            helper(nums, i);
         }
         return ans;
     }
 
-    public void helper(int[] nums, int n, int start, List<List<Integer>> ans) {
-        int left = start;
+    public void helper(int[] nums, int index) {
+        int rest = 0 - nums[index];
+        int left = index + 1;
         int right = nums.length - 1;
         while (left < right) {
-            if (nums[left] + nums[right] + n == 0) {
-                List<Integer> tmp = new ArrayList();
-                tmp.add(n);
-                tmp.add(nums[left]);
-                tmp.add(nums[right]);
-                ans.add(tmp);
-                while (nums[left] == nums[left + 1] & left + 1 < right) {
+            if ((nums[right] + nums[left]) < rest) left += 1;
+            else if (nums[left] + nums[right] > rest) right -= 1;
+            else {
+                List<Integer> current = new ArrayList();
+                current.add(nums[index]);
+                current.add(nums[left]);
+                current.add(nums[right]);
+                ans.add(current);
+                while (left < right && nums[left] == nums[left + 1]) {
                     left += 1;
                 }
                 left += 1;
-            } else if (nums[left] + nums[right] + n < 0) {
-                left += 1;
-            } else {
-                right -= 1;
             }
         }
     }
