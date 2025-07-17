@@ -16,31 +16,18 @@
 class Solution {
     int ans;
     public int helper(TreeNode node) {
-        if (node == null) {
-            return 0;
-        }
-        int left = helper(node.left);
-        int right = helper(node.right);
-        
-        if (left + right + node.val > ans) {
-            ans = Integer.max(ans, left + right + node.val);
-        }
-        
-        if (node.val + left > node.val + right) {
-            if (node.val + left >= 0) {
-                return node.val + left;
-            }
-            return 0;
-        }
-        if (node.val + right >= 0) {
-            return node.val + right;
-        }
-        return 0;
+        if (node == null) return 0;
+        int leftMax = helper(node.left);
+        int rightMax = helper(node.right);
+        ans = Math.max(ans, node.val);
+        ans = Math.max(ans, node.val + leftMax);
+        ans = Math.max(ans, node.val + leftMax + rightMax);
+        ans = Math.max(ans, node.val + rightMax);
+        return Math.max(node.val, Math.max(node.val + rightMax, node.val + leftMax));
     }
-
     public int maxPathSum(TreeNode root) {
-        this.ans = Integer.MIN_VALUE;
-        int ret = helper(root);
-        return ans;     
+        ans = Integer.MIN_VALUE;
+        helper(root);
+        return ans;
     }
 }
