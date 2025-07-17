@@ -6,30 +6,28 @@
 
 // @lc code=start
 class Solution {
-    public int lengthOfLIS(int[] nums) {
-        List<Integer> sub = new ArrayList();
-        sub.add(nums[0]);
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] > sub.get(sub.size() - 1)) {
-                sub.add(nums[i]);
-            } else {
-                int index = bs(sub, nums[i]);
-                sub.set(index, nums[i]);
-            }
-        }
-        return sub.size();
-    }
-
-    public int bs(List<Integer> sub, int num) {
+    public int search(List<Integer> list, int target) {
+        int right = list.size() - 1;
         int left = 0;
-        int right = sub.size() - 1;
-        while (left < right) {
+        while (left <= right) {
             int mid = (left + right) / 2;
-            if (sub.get(mid) == num) return mid;
-            if (sub.get(mid) < num) left = mid + 1;
-            else right = mid;
+            if (list.get(mid) == target) return mid;
+            if (list.get(mid) < target) left = mid + 1;
+            else right = mid - 1;
         }
         return left;
+    }
+    public int lengthOfLIS(int[] nums) {
+        List<Integer> list = new ArrayList();
+        for (int i = 0; i < nums.length; i++) {
+            if (list.size() == 0 || list.get(list.size() - 1) < nums[i])
+                list.add(nums[i]);
+            else {
+                int toInsert = search(list, nums[i]);
+                list.set(toInsert, nums[i]);
+            }
+        }
+        return list.size();
     }
 }
 // @lc code=end
