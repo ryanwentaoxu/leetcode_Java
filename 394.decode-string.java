@@ -16,16 +16,18 @@ class Solution {
             } else {
                 int num = 0;
                 while (Character.isDigit(s.charAt(index))) {
-                    num = num * 10 + (int)(s.charAt(index) - '0');
+                    num = num * 10 + s.charAt(index) - '0';
                     index += 1;
                 }
                 index += 1;
-                String sub = decodeString(s);
-                for (int i = 1; i <= num; i++) sb.append(sub);
+                String next = decodeString(s);
                 index += 1;
+                for (int i = 0; i < num; i++) {
+                    sb.append(next);
+                }
             }
-        }   
-        return sb.toString(); 
+        }
+        return sb.toString();
     }
 }
 // @lc code=end
