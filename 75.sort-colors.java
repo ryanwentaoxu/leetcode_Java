@@ -8,23 +8,19 @@
 class Solution {
     public void sortColors(int[] nums) {
         int p0 = 0;
+        int curr = 0;
         int p2 = nums.length - 1;
-        int current = 0;
-        while (current <= p2) {
-            if (nums[current] == 0) {
-                int tmp = nums[p0];
-                nums[p0] = nums[current];
-                nums[current] = tmp;
-                p0 += 1;
-                current += 1;
-            } else if (nums[current] == 2) {
-                int tmp = nums[p2];
-                nums[p2] = nums[current];
-                nums[current] = tmp;
-                p2 -= 1;
-            } else {
-                current += 1;
-            }
+
+        while (curr <= p2) {
+            if (nums[curr] == 0) {
+                int tmp = nums[curr];
+                nums[curr++] = nums[p0];
+                nums[p0++] = tmp;
+            } else if (nums[curr] == 2) {
+                int tmp = nums[curr];
+                nums[curr] = nums[p2];
+                nums[p2--] = tmp;
+            } else curr += 1;
         }
     }
 }
