@@ -7,26 +7,23 @@
 // @lc code=start
 class Solution {
     public int minMeetingRooms(int[][] intervals) {
-        if (intervals.length == 0) return 0;
-        List<Integer> start = new ArrayList();
-        List<Integer> end = new ArrayList();
-        for (int[] i : intervals) {
-            start.add(i[0]);
-            end.add(i[1]);
-        }
-        Collections.sort(start);
-        Collections.sort(end);
-        
         int ans = 0;
-        int startPointer = 0;
-        int endPointer = 0;
-        while (startPointer < intervals.length) {
-            if (start.get(startPointer) >= end.get(endPointer)) {
+        int[] start = new int[intervals.length];
+        int[] end = new int[intervals.length];
+        for (int i = 0; i < intervals.length; i++) {
+            start[i] = intervals[i][0];
+            end[i] = intervals[i][1];
+        }
+        Arrays.sort(start);
+        Arrays.sort(end);
+        int n = start.length;
+        int endIndex = 0;
+        for (int i = 0; i < n; i++) {
+            if (start[i] >= end[endIndex]) {
                 ans -= 1;
-                endPointer += 1;
+                endIndex++;
             }
             ans += 1;
-            startPointer += 1;
         }
         return ans;
     }
