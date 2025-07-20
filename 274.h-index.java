@@ -7,20 +7,18 @@
 // @lc code=start
 class Solution {
     public int hIndex(int[] citations) {
-        List<Integer> list = new ArrayList();
-        for (int c : citations) list.add(c);
-        Collections.sort(list, Collections.reverseOrder());
-        int ans = 0;
-        Map<Integer, Integer> map = new HashMap();
-        for (int i = 0; i < list.size(); i++) {
-            map.put(list.get(i), i + 1);
+        int n = citations.length;
+        int[] papers = new int[n + 1];
+        for (int c : citations) {
+            papers[Math.min(n, c)]++;
         }
-
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            ans = Math.max(ans, Math.min(entry.getKey(), entry.getValue()));
+        int k = n;
+        int sum = papers[n];
+        while (k > sum) {
+            k -= 1;
+            sum += papers[k];
         }
-        return ans;
-
+        return k;
     }
 }
 // @lc code=end
