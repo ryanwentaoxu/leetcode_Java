@@ -8,35 +8,33 @@
 class Solution {
     int[] array;
     int[] original;
-
-    Random rand = new Random();
+    Random rnd;
 
     public Solution(int[] nums) {
-        array = nums;
-        original = nums.clone();
+        this.original = nums.clone();
+        this.array = nums.clone();
+        rnd = new Random();
+    }
+    
+    public void swap(int[] arr, int index1, int index2) {
+        int tmp = arr[index1];
+        arr[index1] = arr[index2];
+        arr[index2] = tmp;
     }
     
     public int[] reset() {
-        array = original;
-        original = original.clone();
-        return original;
-    }
-
-    private int randRange(int min, int max) {
-        return rand.nextInt(max - min) + min;
-    }
-
-    private void swapAt(int i, int j) {
-        int temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+        this.array = this.original;
+        this.original = this.original.clone();
+        return this.array;
     }
     
     public int[] shuffle() {
-        for (int i = 0; i < array.length; i++) {
-            swapAt(i, randRange(i, array.length));
+        int n = this.array.length;
+        for (int i = 0; i < n; i++) {
+            int index = i + rnd.nextInt(n - i);
+            swap(this.array, i, index);
         }
-        return array;
+        return this.array;
     }
 }
 
