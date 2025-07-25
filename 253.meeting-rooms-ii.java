@@ -7,21 +7,21 @@
 // @lc code=start
 class Solution {
     public int minMeetingRooms(int[][] intervals) {
-        int ans = 0;
-        int[] start = new int[intervals.length];
-        int[] end = new int[intervals.length];
-        for (int i = 0; i < intervals.length; i++) {
-            start[i] = intervals[i][0];
-            end[i] = intervals[i][1];
+        List<Integer> start = new ArrayList();
+        List<Integer> end = new ArrayList();
+        for (int[] interval : intervals) {
+            start.add(interval[0]);
+            end.add(interval[1]);
         }
-        Arrays.sort(start);
-        Arrays.sort(end);
-        int n = start.length;
-        int endIndex = 0;
+        Collections.sort(start);
+        Collections.sort(end);
+        int n = intervals.length;
+        int ans = 0;
+        int j = 0;
         for (int i = 0; i < n; i++) {
-            if (start[i] >= end[endIndex]) {
+            if (start.get(i) >= end.get(j)) {
                 ans -= 1;
-                endIndex++;
+                j += 1;
             }
             ans += 1;
         }
