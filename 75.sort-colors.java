@@ -7,20 +7,25 @@
 // @lc code=start
 class Solution {
     public void sortColors(int[] nums) {
-        int p0 = 0;
-        int curr = 0;
-        int p2 = nums.length - 1;
-
-        while (curr <= p2) {
-            if (nums[curr] == 0) {
-                int tmp = nums[curr];
-                nums[curr++] = nums[p0];
-                nums[p0++] = tmp;
-            } else if (nums[curr] == 2) {
-                int tmp = nums[curr];
-                nums[curr] = nums[p2];
-                nums[p2--] = tmp;
-            } else curr += 1;
+        int pZero = 0;
+        int pTwo = nums.length - 1;
+        int current = 0;
+        int n = nums.length;
+        while (current <= pTwo) {
+            if (nums[current] == 0) {
+                int tmp = nums[current];
+                nums[current] = nums[pZero];
+                nums[pZero] = tmp;
+                pZero += 1;
+                current += 1;
+            } else if (nums[current] == 2) {
+                int tmp = nums[current];
+                nums[current] = nums[pTwo];
+                nums[pTwo] = tmp;
+                pTwo -= 1;
+            } else {
+                current += 1;
+            }
         }
     }
 }
