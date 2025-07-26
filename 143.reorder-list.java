@@ -17,36 +17,38 @@
  */
 class Solution {
     public void reorderList(ListNode head) {
-        if (head == null) return;
-        ListNode slow = head;
         ListNode fast = head;
+        ListNode slow = head;
         while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
-        
+
+        // reverse
+        ListNode node = slow;
         ListNode prev = null;
-        ListNode curr = slow;
-        ListNode tmp;
-        while (curr != null) {
-            tmp = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = tmp;
+        ListNode next;
+
+        while (node != null) {
+            next = node.next;
+            node.next = prev;
+            prev = node;
+            node = next;
         }
 
-        ListNode first = head;
-        ListNode second = prev;
-        while (second.next != null) {
-            tmp = first.next;
-            first.next = second;
-            first = tmp;
-            
-            tmp = second.next;
-            second.next = first;
-            second = tmp;
-        }
+        ListNode node1 = head;
+        ListNode node2 = prev;
 
+        while (node2.next != null) {
+            ListNode next1 = node1.next;
+            node1.next = node2;
+
+            ListNode next2 = node2.next;
+            node2.next = next1;
+
+            node1 = next1;
+            node2 = next2;
+        }
     }
 }
 // @lc code=end
