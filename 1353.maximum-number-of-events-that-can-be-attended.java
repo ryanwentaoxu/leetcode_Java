@@ -4,27 +4,23 @@
  * [1353] Maximum Number of Events That Can Be Attended
  */
 
-// @lc code=start
 class Solution {
     public int maxEvents(int[][] events) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>();
-        Comparator<int[]> c = new Comparator<int[]>() {
-            @Override
-            public int compare(int[] o1, int[] o2) {
-                return o1[0] - o2[0];
-            }
-        };
-        Arrays.sort(events, c);
+        Arrays.sort(events, (a, b) -> (a[0] - b[0]));
+        PriorityQueue<Integer> pq = new PriorityQueue();
+        int ans = 0;
+        int maxDay = 100000;
         int index = 0;
-        int ans = 0; 
-        for (int d = 1; d <= 100000; d++) {
-            while (index < events.length && events[index][0] == d) {
+        for (int i = 1; i <= maxDay; i++) {
+            while (index < events.length && events[index][0] <= i) {
                 pq.offer(events[index][1]);
-                index++;
+                index += 1;
             }
-            while (!pq.isEmpty() && pq.peek() < d) {
+
+            while (!pq.isEmpty() && pq.peek() < i) {
                 pq.poll();
             }
+
             if (!pq.isEmpty()) {
                 pq.poll();
                 ans += 1;
