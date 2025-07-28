@@ -83,19 +83,19 @@ class Solution {
         int[] dp = new int[n];
         Arrays.fill(dp, Integer.MAX_VALUE);
         dp[src] = 0;
-        for (int i = 0; i <= k; i++) {
-            int[] tmp = new int[n];
-            tmp = Arrays.copyOf(dp, n);
+        for (int i = 1; i <= k + 1; i++) {
+            int[] current = Arrays.copyOfRange(dp, 0, n);
             for (int[] f : flights) {
                 int from = f[0];
                 int to = f[1];
-                int distance = f[2];
-                if (dp[from] != Integer.MAX_VALUE) {
-                    tmp[to] = Math.min(dp[from] + distance, tmp[to]);
+                int d = f[2];
+                if (dp[from] < Integer.MAX_VALUE) {
+                    current[to] = Math.min(current[to], dp[from] + d);
                 }
             }
-            dp = tmp;
+            dp = Arrays.copyOfRange(current, 0, n);
         }
+        for (int p : dp) System.out.println(p);
         return dp[dst] == Integer.MAX_VALUE ? -1 : dp[dst];
     }
 }
