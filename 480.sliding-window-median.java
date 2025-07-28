@@ -68,41 +68,50 @@
 
 class Solution {
     int[] nums;
+
     public void balance(TreeSet<Integer> left, TreeSet<Integer> right) {
-        while (right.size() < left.size()) {
+        while (left.size() > right.size()) {
             right.add(left.pollFirst());
         }
     }
 
-    public double get(TreeSet<Integer> left, TreeSet<Integer> right) {
+    public double getMid(TreeSet<Integer> left, TreeSet<Integer> right) {
         if (left.size() == right.size()) {
-            return ((double) nums[left.first()] + nums[right.first()]) / 2;
+            return ((double)nums[left.first()] + (double)nums[right.first()]) / 2.0;
         }
-        return (double)nums[right.first()];
+        return (double)(nums[right.first()]);
     }
 
     public double[] medianSlidingWindow(int[] nums, int k) {
         this.nums = nums;
-        Comparator<Integer> c = (a, b) -> nums[a] != nums[b] ? Integer.compare(nums[a], nums[b]) : a - b;
+        Comparator<Integer> c = new Comparator<Integer>()
+        {
+            @Override
+            public int compare(Integer a, Integer b) {
+                if (nums[a] == nums[b]) return a - b;
+                return Integer.compare(nums[a], nums[b]);
+            }
+        };
         TreeSet<Integer> left = new TreeSet<Integer>(c.reversed());
         TreeSet<Integer> right = new TreeSet<Integer>(c);
-        double[] ret = new double[nums.length - k + 1];
-        int index = 0;
+        
         for (int i = 0; i < k; i++) {
             left.add(i);
         }
-        balance(left, right);
-        ret[index++] = get(left, right);
-        for (int i = k; i < nums.length; i++) {
-            if (!right.remove(i - k)) {
-                left.remove(i - k);
-            }
+        balance(left ,right);
+        int n = nums.length;
+        double[] ans = new double[n - k + 1];
+        int index = 0;
+        ans[index++] = getMid(left, right);
+        for (int i = k; i < n; i++) {
+            if (!left.remove(i - k)) right.remove(i - k);
+            // balance(left, right);
             right.add(i);
             left.add(right.pollFirst());
             balance(left, right);
-            ret[index++] = get(left, right);
+            ans[index++] = getMid(left, right);
         }
-        return ret;
+        return ans;
     }
 }
 
