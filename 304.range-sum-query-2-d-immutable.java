@@ -75,30 +75,22 @@
 class NumMatrix {
     int[][] dp;
     public NumMatrix(int[][] matrix) {
-        dp = new int[matrix.length][matrix[0].length];
-        dp[0][0] = matrix[0][0];
-        for (int i = 1; i < matrix.length; i++) dp[i][0] = matrix[i][0] + dp[i - 1][0];
-        for (int i = 1; i < matrix[0].length; i++) dp[0][i] = matrix[0][i] + dp[0][i - 1];
-
-        for (int i = 1; i < matrix.length; i++) {
-            for (int j = 1; j < matrix[i].length; j++) {
-                dp[i][j] = matrix[i][j] + dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1];
+        int m = matrix.length;
+        int n = matrix[0].length;
+        dp = new int[m + 1][n + 1];
+        for (int i = 1; i < matrix.length + 1; i++) {
+            for (int j = 1; j < matrix[i - 1].length + 1; j++) {
+                dp[i][j] = dp[i][j - 1] + dp[i - 1][j] - dp[i - 1][j - 1] + matrix[i - 1][j - 1];
             }
         }
-
-        
     }
     
     public int sumRegion(int row1, int col1, int row2, int col2) {
-        int r10 = row1 - 1;
-        int c10 = col1 - 1;
-        int ret1 = dp[row2][col2];
-
-        int ret2 = (c10 >= 0) ? dp[row2][c10] : 0;
-        int ret3 = (r10 >= 0) ? dp[r10][col2] : 0;
-
-        int ret4 = (r10 >= 0 && c10 >= 0) ? dp[r10][c10] : 0;
-        return ret1 - ret2 - ret3 + ret4;
+        int s1 = dp[row1][col1];
+        int s2 = dp[row2 + 1][col2 + 1];
+        int s3 = dp[row2 + 1][col1];
+        int s4 = dp[row1][col2 + 1];
+        return s2 - s4 - s3 + s1;
     }
 }
 
